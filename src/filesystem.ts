@@ -158,9 +158,7 @@ export class Filesystem {
 
   insertLink(p: string) {
     const symlink = fs.readlinkSync(p);
-    // /var => /private/var
-    const parentPath = fs.realpathSync(path.dirname(p));
-    const link = path.relative(fs.realpathSync(this.src), path.join(parentPath, symlink));
+    const link = path.relative(fs.realpathSync(this.src), symlink);
     if (link.startsWith('..')) {
       throw new Error(`${p}: file "${link}" links out of the package`);
     }
