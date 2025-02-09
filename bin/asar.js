@@ -55,13 +55,19 @@ program.command('list <archive>')
     }
   })
 
-program.command('extract-file <archive> <filename>')
-  .alias('ef')
-  .description('extract one file from archive')
-  .action(function (archive, filename) {
-    require('fs').writeFileSync(require('path').basename(filename),
-      asar.extractFile(archive, filename))
-  })
+  program
+  .command('extract-file <archive> <filename> [destination]')
+   .alias('ef')
+  .description(
+    'extract one file from archive. Optionally utput to destination folder, otherwise cwd will be used',
+  )
+  .action(function (archive, filename, destination) {
+    const path = require('path');
+    const file = path.basename(filename);
+    const out = destination ? path.join(destination, file) : file;
+    require('fs').writeFileSync(out, asar.extractFile(archive, filename));
+  });
+
 
 program.command('extract <archive> <dest>')
   .alias('e')
