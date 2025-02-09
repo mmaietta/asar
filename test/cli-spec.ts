@@ -29,7 +29,7 @@ describe('command line interface', function () {
     await execAsar('p test/input/packthis/ tmp/packthis-cli.asar');
     await verifySmartUnpack('tmp/packthis-cli.asar');
   });
-  it.if(os.platform() === 'win32')(
+  it.ifWindows(
     'should create archive from directory with windows-style path separators',
     async () => {
       await execAsar('p test\\input\\packthis\\ tmp\\packthis-cli.asar');
