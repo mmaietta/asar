@@ -154,14 +154,11 @@ describe('command line interface', function () {
     );
     await verifySmartUnpack('tmp/packthis-unpack-subdir-cli.asar');
   });
-  it.if(os.platform() !== 'win32')(
-    'should unpack static framework with all underlying symlinks unpacked',
-    async () => {
-      const { testPath } = await createSymlinkApp('app');
-      await execAsar(
-        `p ${testPath} tmp/packthis-with-symlink.asar --unpack *.txt --unpack-dir var --exclude-hidden`,
-      );
-      await verifySmartUnpack('tmp/packthis-with-symlink.asar');
-    },
-  );
+  it('should unpack static framework with all underlying symlinks unpacked', async () => {
+    const { testPath } = await createSymlinkApp('app');
+    await execAsar(
+      `p ${testPath} tmp/packthis-with-symlink.asar --unpack *.txt --unpack-dir var --exclude-hidden`,
+    );
+    await verifySmartUnpack('tmp/packthis-with-symlink.asar');
+  });
 });
