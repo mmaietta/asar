@@ -23,7 +23,7 @@ const createTestApp = async (testName: string, additionalFiles: Record<string, s
   const privateVarPath = path.join(testPath, 'private', 'var');
   const varPath = path.join(testPath, 'var');
   const appPath = path.join(varPath, 'app');
-  
+
   await fs.mkdirp(privateVarPath);
   await fs.symlink(path.relative(testPath, privateVarPath), varPath);
 
@@ -36,7 +36,7 @@ const createTestApp = async (testName: string, additionalFiles: Record<string, s
     await fs.writeFile(originFilePath, fileData);
   }
 
-  await fs.mkdirp(appPath)
+  await fs.mkdirp(appPath);
   await fs.symlink('../file.txt', path.join(appPath, 'file.txt'));
 
   return {

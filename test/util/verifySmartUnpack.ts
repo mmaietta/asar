@@ -41,7 +41,7 @@ export function removeUnstableProperties(data: any) {
         return undefined;
       }
       if (name === 'link') {
-        return toSystemIndependentPath(value)
+        return toSystemIndependentPath(value);
       }
       return value;
     }),
