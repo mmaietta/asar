@@ -47,10 +47,15 @@ const createTestApp = async (testName: string, additionalFiles: Record<string, s
 
 const safeSymlinkWindows = async (target: string, src: string) => {
   // win32 - symlink: `EPERM: operation not permitted` on node <20 unless using `junction` or running as Admin (for `file`)
-  const symlinkType = platform() !== 'win32' ? 'file' : 'junction';
+  const symlinkType = 'file'; // platform() !== 'win32' ? 'file' : 'junction';
   await fs.symlink(target, src, symlinkType).catch((e) => {
     if (e.code === 'EEXIST') {
       return;
+    }
+    if (e.code === 'EPERM' && e.syscall === 'symlink') {
+      throw new Error(
+        'Could not create symlink. On Windows, consider activating Developer Mode to allow non-admin users to create symlinks by following the instructions at https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development.',
+      );
     }
     throw e;
   });
