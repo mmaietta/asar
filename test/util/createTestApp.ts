@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from '../../lib/wrapped-fs';
 import rimraf from 'rimraf';
-import { platform } from 'os';
+
 /**
  * Directory structure:
  * testName
@@ -13,19 +13,20 @@ import { platform } from 'os';
  * └── var -> private/var
  */
 const appsDir = path.join(__dirname, '../..', 'tmp');
-let counter = 0;
-const createTestApp = async (testName: string, additionalFiles: Record<string, string> = {}) => {
-  const outDir = 'app-' + Math.floor(Math.random() * 100);
+
+const createTestApp = async (
+  testName: string | undefined,
+  additionalFiles: Record<string, string> = {},
+) => {
+  const outDir = testName || 'app' + Math.floor(Math.random() * 100);
   const testPath = path.join(appsDir, outDir);
+  const privateVarPath = path.join(testPath, 'private', 'var');
+  const varPath = path.join(testPath, 'var');
 
   rimraf.sync(testPath, fs);
 
-  const privateVarPath = path.join(testPath, 'private', 'var');
-  const varPath = path.join(testPath, 'var');
-  const appPath = path.join(varPath, 'app');
-
-  await fs.mkdirp(privateVarPath);
-  await fs.symlink(path.relative(testPath, privateVarPath), varPath);
+  fs.mkdirSync(privateVarPath, { recursive: true });
+  fs.symlinkSync(path.relative(testPath, privateVarPath), varPath);
 
   const files = {
     'file.txt': 'hello world',
@@ -36,14 +37,11 @@ const createTestApp = async (testName: string, additionalFiles: Record<string, s
     await fs.writeFile(originFilePath, fileData);
   }
 
-  await fs.mkdirp(appPath);
-  await fs.symlink('../file.txt', path.join(appPath, 'file.txt'));
+  const appPath = path.join(varPath, 'app');
+  fs.mkdirpSync(appPath);
+  fs.symlinkSync('../file.txt', path.join(appPath, 'file.txt'));
 
-  return {
-    testPath,
-    varPath,
-    appPath,
-  };
+  return { testPath, varPath, appPath };
 };
 
 export default createTestApp;
