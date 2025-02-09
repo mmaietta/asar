@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from '../../lib/wrapped-fs';
 import rimraf from 'rimraf';
+import { platform } from 'os';
 /**
  * Directory structure:
  * testName
@@ -46,7 +47,7 @@ const createTestApp = async (testName: string, additionalFiles: Record<string, s
 
 const safeSymlinkWindows = async (target: string, src: string) => {
   // win32 - symlink: `EPERM: operation not permitted` on node <20 unless using `junction` or running as Admin (for `file`)
-  const symlinkType = 'file'; // process.platform !== 'win32' ? 'file' : 'junction';
+  const symlinkType = platform() !== 'win32' ? 'file' : 'junction';
   await fs.symlink(target, src, symlinkType).catch((e) => {
     if (e.code === 'EEXIST') {
       return;
