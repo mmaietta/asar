@@ -21,10 +21,11 @@ const createTestApp = async (testName: string, additionalFiles: Record<string, s
   rimraf.sync(testPath, fs);
 
   const privateVarPath = path.join(testPath, 'private', 'var');
-  await fs.mkdirp(privateVarPath);
   const varPath = path.join(testPath, 'var');
   const appPath = path.join(varPath, 'app');
-  await fs.mkdirp(appPath);
+  
+  await fs.mkdirp(privateVarPath);
+  await fs.symlink(path.relative(testPath, privateVarPath), varPath);
 
   const files = {
     'file.txt': 'hello world',
@@ -35,30 +36,14 @@ const createTestApp = async (testName: string, additionalFiles: Record<string, s
     await fs.writeFile(originFilePath, fileData);
   }
 
-  await safeSymlinkWindows(path.relative(testPath, privateVarPath), varPath);
-  await safeSymlinkWindows('../file.txt', path.join(appPath, 'file.txt'));
+  await fs.mkdirp(appPath)
+  await fs.symlink('../file.txt', path.join(appPath, 'file.txt'));
 
   return {
     testPath,
     varPath,
     appPath,
   };
-};
-
-const safeSymlinkWindows = async (target: string, src: string) => {
-  // win32 - symlink: `EPERM: operation not permitted` on node <20 unless using `junction` or running as Admin (for `file`)
-  const symlinkType = 'file'; // platform() !== 'win32' ? 'file' : 'junction';
-  await fs.symlink(target, src, symlinkType).catch((e) => {
-    if (e.code === 'EEXIST') {
-      return;
-    }
-    if (e.code === 'EPERM' && e.syscall === 'symlink') {
-      throw new Error(
-        'Could not create symlink. On Windows, consider activating Developer Mode to allow non-admin users to create symlinks by following the instructions at https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development.',
-      );
-    }
-    throw e;
-  });
 };
 
 export default createTestApp;
