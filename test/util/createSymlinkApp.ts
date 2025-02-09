@@ -14,17 +14,16 @@ import rimraf from 'rimraf';
 const appsDir = path.join(__dirname, '../..', 'tmp');
 let counter = 0;
 const createTestApp = async (testName: string, additionalFiles: Record<string, string> = {}) => {
-  const outDir = testName || 'app-' + counter++;
+  const outDir = 'app-' + Math.floor(Math.random() * 100);
   const testPath = path.join(appsDir, outDir);
-  if (fs.existsSync(testPath)) {
-    fs.rmdirSync(testPath);
-  }
+
+  rimraf.sync(testPath, fs)
 
   const privateVarPath = path.join(testPath, 'private', 'var');
-  const varPath = path.join(testPath, 'var');
-
   await fs.mkdirp(privateVarPath);
-  await fs.symlink(path.relative(testPath, privateVarPath), varPath);
+  const varPath = path.join(testPath, 'var');
+  const appPath = path.join(varPath, 'app');
+  await fs.mkdirp(appPath);
 
   const files = {
     'file.txt': 'hello world',
@@ -34,15 +33,27 @@ const createTestApp = async (testName: string, additionalFiles: Record<string, s
     const originFilePath = path.join(varPath, filename);
     await fs.writeFile(originFilePath, fileData);
   }
-  const appPath = path.join(varPath, 'app');
-  await fs.mkdirp(appPath);
-  await fs.symlink('../file.txt', path.join(appPath, 'file.txt'));
+
+  await safeSymlinkWindows(path.relative(testPath, privateVarPath), varPath);
+  await safeSymlinkWindows('../file.txt', path.join(appPath, 'file.txt'));
 
   return {
     testPath,
     varPath,
     appPath,
   };
+};
+
+const safeSymlinkWindows = async (target: string, src: string) => {
+  // win32 - symlink: `EPERM: operation not permitted` on node <20 unless using `junction` or running as Admin (for `file`)
+  const symlinkType = process.platform !== 'win32' ? 'file' : 'junction';
+  await fs.symlink(target, src, symlinkType)
+  .catch((e) => {
+    if (e.code === 'EEXIST') {
+      return;
+    }
+    throw e;
+  });
 };
 
 export default createTestApp;
