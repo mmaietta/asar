@@ -12,7 +12,7 @@ import rimraf from 'rimraf';
  * │       └── file.txt
  * └── var -> private/var
  */
-const appsDir = path.join(__dirname, '../..', 'tmp');
+export const appsDir = path.join(__dirname, '../..', 'tmp');
 
 const createTestApp = async (
   testName: string | undefined,
