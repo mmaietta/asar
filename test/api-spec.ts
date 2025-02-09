@@ -20,12 +20,13 @@ describe('api', function () {
     await asar.createPackage('test/input/packthis/', 'tmp/packthis-api.asar');
     return compFiles('tmp/packthis-api.asar', 'test/expected/packthis.asar');
   });
-  if (os.platform() === 'win32') {
-    it('should create archive with windows-style path separators', async () => {
+  it.if(os.platform() === 'win32')(
+    'should create archive with windows-style path separators',
+    async () => {
       await asar.createPackage('test\\input\\packthis\\', 'tmp\\packthis-api.asar');
       return compFiles('tmp/packthis-api.asar', 'test/expected/packthis.asar');
-    });
-  }
+    },
+  );
   it('should create archive from directory (without hidden files)', async () => {
     await asar.createPackageWithOptions(
       'test/input/packthis/',
@@ -103,7 +104,7 @@ describe('api', function () {
   });
 
   // We don't extract symlinks on Windows, so skip these tests
-  it.if(os.platform() === 'win32')('should extract an archive with symlink', async () => {
+  it.if(os.platform() !== 'win32')('should extract an archive with symlink', async () => {
     assert.strictEqual(isSymbolicLinkSync('test/input/packthis-with-symlink/real.txt'), true);
     await asar.createPackageWithOptions(
       'test/input/packthis-with-symlink/',
@@ -116,7 +117,7 @@ describe('api', function () {
       'test/input/packthis-with-symlink/real.txt',
     );
   });
-  it.if(os.platform() === 'win32')(
+  it.if(os.platform() !== 'win32')(
     'should extract an archive with symlink having the same prefix',
     async () => {
       assert.strictEqual(
@@ -138,7 +139,7 @@ describe('api', function () {
       );
     },
   );
-  it.if(os.platform() === 'win32')('should not extract an archive with a bad symlink', async () => {
+  it.if(os.platform() !== 'win32')('should not extract an archive with a bad symlink', async () => {
     assert.throws(() => {
       asar.extractAll('test/input/bad-symlink.asar', 'tmp/bad-symlink/');
     });
