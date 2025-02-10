@@ -38,7 +38,7 @@ jobs:
       - name: Test
         run: yarn test
   test-docker:
-    name: Test
+    name: Test Linux
     strategy:
       matrix:
         node-version:
