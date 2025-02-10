@@ -30,7 +30,7 @@
     "build": "tsc",
     "build:docker": "docker build --build-arg NODE_VERSION=${NODE_VERSION:-22.10} -f Dockerfile -t asar-test-image:${NODE_VERSION:-22.10} .",
     "test": "yarn lint && yarn jest",
-    "test:docker": "docker run --rm -v $(pwd):/app -v $(pwd)-node-modules:/project/node_modules asar-test-image:${NODE_VERSION:-22.10} /bin/bash -c \"yarn install --frozen-lockfile && yarn test\"",
+    "test:docker": "docker run --rm -v $(pwd):/app -v $(pwd)/docker_node_modules:/app/node_modules asar-test-image:${NODE_VERSION:-22.10} /bin/bash -c \"yarn install --frozen-lockfile && yarn test\"",
     "lint": "yarn prettier:check",
     "prettier": "prettier \"src/**/*.ts\" \"test/**/*.ts\"",
     "prettier:check": "yarn prettier --check",
