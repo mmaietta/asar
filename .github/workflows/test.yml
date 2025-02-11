@@ -41,5 +41,3 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Test
         run: yarn test
-        env:
-          DISPLAY: :0
