@@ -28,7 +28,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "yarn lint && yarn jest",
+    "test": "yarn lint && xvfb-maybe jest",
     "lint": "yarn prettier:check",
     "prettier": "prettier \"src/**/*.ts\" \"test/**/*.ts\"",
     "prettier:check": "yarn prettier --check",
@@ -53,6 +53,7 @@
     "prettier": "^3.3.3",
     "rimraf": "^3.0.2",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "xvfb-maybe": "^0.2.1"
   }
 }
