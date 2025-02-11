@@ -1,15 +1,11 @@
 import assert from 'assert';
 import childProcess from 'child_process';
-import os from 'os';
-import path from 'path';
 import { promisify } from 'util';
 import fs from '../lib/wrapped-fs';
 
 import compFileLists from './util/compareFileLists';
 import createSymlinkApp from './util/createTestApp';
 import { verifyFileTree, verifySmartUnpack } from './util/verifySmartUnpack';
-import rimraf from 'rimraf';
-import { TEST_APPS_DIR } from './util/constants';
 
 const exec = promisify(childProcess.exec);
 
