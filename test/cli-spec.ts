@@ -159,19 +159,9 @@ describe('command line interface', function () {
     await verifySmartUnpack('tmp/packthis-unpack-subdir-cli.asar');
   });
   it('should unpack static framework with all underlying symlinks unpacked', async () => {
-    const { testPath, buildOrderingData } = await createSymlinkApp('ordered-app');
-    
-    // this is functionally the same as `--unpack *.txt --unpack-dir var`
-    const data = buildOrderingData((filepath: string) => ({
-      unpack: filepath.endsWith('.txt') || filepath.includes('var'),
-    }));
-    
-    const orderingPath = path.join(TEST_APPS_DIR, 'ordered-app-ordering.txt');
-    rimraf.sync(orderingPath)
-    await fs.writeFile(orderingPath, data);
-
+    const { testPath } = await createSymlinkApp('app');
     await execAsar(
-      `p ${testPath} tmp/packthis-with-symlink.asar --ordering=${orderingPath} --exclude-hidden`,
+      `p ${testPath} tmp/packthis-with-symlink.asar --unpack *.txt --unpack-dir var --exclude-hidden`,
     );
     await verifySmartUnpack('tmp/packthis-with-symlink.asar');
   });

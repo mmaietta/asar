@@ -27,11 +27,11 @@ const createTestApp = async (
 
   fs.mkdirSync(privateVarPath, { recursive: true });
   fs.symlinkSync(path.relative(testPath, privateVarPath), varPath);
-  
+
   const appPath = path.join(varPath, 'app');
   fs.mkdirpSync(appPath);
   fs.symlinkSync('../file.txt', path.join(appPath, 'file.txt'));
-  
+
   const files = {
     'file.txt': 'hello world',
     ...additionalFiles,
@@ -40,7 +40,6 @@ const createTestApp = async (
     const originFilePath = path.join(varPath, filename);
     await fs.writeFile(originFilePath, fileData);
   }
-
 
   const ordering = walk(testPath).map((filepath: string) => filepath.substring(testPath.length)); // convert to paths relative to root
 
