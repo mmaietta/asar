@@ -23,9 +23,10 @@ module.exports = {
     {
       ...common,
       runner: '@kayahr/jest-electron-runner/main',
+      testMatch: [...common.testMatch, "!**/cli-spec.ts"], // cli isn't accessible within electron main process, right?
       testEnvironmentOptions: {
         electron: {
-          options: ['force-device-scale-factor=1'], // cmd line args for electron
+          options: [], // args for electron (such as 'no-sandbox' & 'force-device-scale-factor=1')
           disableHardwareAcceleration: false,
         },
       },
