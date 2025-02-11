@@ -6,9 +6,10 @@ import { promisify } from 'util';
 import fs from '../lib/wrapped-fs';
 
 import compFileLists from './util/compareFileLists';
-import { compFiles } from './util/compareFiles';
 import createSymlinkApp from './util/createTestApp';
 import { verifyFileTree, verifySmartUnpack } from './util/verifySmartUnpack';
+import rimraf from 'rimraf';
+import { TEST_APPS_DIR } from './util/constants';
 
 const exec = promisify(childProcess.exec);
 
@@ -25,6 +26,9 @@ async function assertAsarOutputMatches(args: string, expectedFilename: string) {
 }
 
 describe('command line interface', function () {
+  // beforeEach(() => {
+  //   rimraf.sync(TEST_APPS_DIR)
+  // })
   it('should create archive from directory', async () => {
     await execAsar('p test/input/packthis/ tmp/packthis-cli.asar');
     await verifySmartUnpack('tmp/packthis-cli.asar');
@@ -156,12 +160,14 @@ describe('command line interface', function () {
   });
   it('should unpack static framework with all underlying symlinks unpacked', async () => {
     const { testPath, buildOrderingData } = await createSymlinkApp('ordered-app');
-    const orderingPath = path.join(testPath, '../ordered-app-ordering.txt');
-
+    
     // this is functionally the same as `--unpack *.txt --unpack-dir var`
     const data = buildOrderingData((filepath: string) => ({
       unpack: filepath.endsWith('.txt') || filepath.includes('var'),
     }));
+    
+    const orderingPath = path.join(TEST_APPS_DIR, 'ordered-app-ordering.txt');
+    rimraf.sync(orderingPath)
     await fs.writeFile(orderingPath, data);
 
     await execAsar(
