@@ -22,13 +22,9 @@ jobs:
           - '16.20'
         os:
           - macos-latest
-          - ubuntu-22.04
           - windows-latest
     runs-on: "${{ matrix.os }}"
     steps:
-      - name: Install Linux Dependencies
-        if: ${{ matrix.os == 'ubuntu-22.04' }}
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libasound2 libgtk-3-0 libnss3 libxss1 libxtst6 xvfb libgbm-dev
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup Node.js
@@ -40,3 +36,23 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Test
         run: yarn test
+  test-docker:
+    name: Test Linux
+    strategy:
+      matrix:
+        node-version:
+          - '20.10'
+          - '18.18'
+          - '16.20'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Build Test Image
+        run: yarn build:docker
+        env:
+          NODE_VERSION: "${{ matrix.node-version }}"
+      - name: Test in Docker Container
+        run: yarn test:docker
+        env:
+          NODE_VERSION: "${{ matrix.node-version }}"
