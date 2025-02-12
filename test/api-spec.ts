@@ -8,6 +8,7 @@ import { compFiles, isSymbolicLinkSync } from './util/compareFiles';
 import transform from './util/transformStream';
 import { verifySmartUnpack } from './util/verifySmartUnpack';
 import { TEST_APPS_DIR } from './util/constants';
+import rimraf from 'rimraf';
 
 const asar = require('../src/asar');
 
@@ -18,9 +19,7 @@ async function assertPackageListEquals(actualList: string[], expectedFilename: s
 
 describe('api', function () {
   afterEach(() => {
-    if (fs.existsSync(TEST_APPS_DIR)) {
-      fs.rmdirSync(TEST_APPS_DIR, { recursive: true });
-    }
+    rimraf.sync(TEST_APPS_DIR, fs);
   });
   it('should create archive from directory', async () => {
     await asar.createPackage('test/input/packthis/', 'tmp/packthis-api.asar');
