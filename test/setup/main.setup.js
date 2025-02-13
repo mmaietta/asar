@@ -1,8 +1,8 @@
 const { app } = require('electron');
 // `app` is undefined when running just `mocha`
+app.commandLine.appendSwitch('no-sandbox');
 if (app) {
   // needed to run electron-mocha within docker container as user is `root`.
-//   app.commandLine.appendSwitch('no-sandbox');
   //   app.commandLine.appendSwitch('headless');
   // Forces Electron not to start dbus
   // Resolves tests logging "Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory"

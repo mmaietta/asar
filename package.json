@@ -32,7 +32,7 @@
     "mocha": "xvfb-maybe electron-mocha --require-main test/setup/main.setup.js",
     "mocha:watch": "mocha --watch",
     "test": "yarn lint && yarn mocha",
-    "test:docker": "docker run --rm -u test-runner -v $(pwd):/home/test-runner/app asar-test-image:${NODE_VERSION:-22.10} /bin/bash -c \"yarn install --frozen-lockfile && yarn mocha\"",
+    "test:docker": "docker run --rm -u root -v $(pwd):/home/test-runner/app asar-test-image:${NODE_VERSION:-22.10} /bin/bash -c \"yarn install --frozen-lockfile && yarn mocha\"",
     "lint": "yarn prettier:check",
     "prettier": "prettier \"src/**/*.ts\" \"test/**/*.js\"",
     "prettier:check": "yarn prettier --check",
