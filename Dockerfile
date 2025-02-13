@@ -8,6 +8,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install --no-install-recommends -y yarn libasound2 libgtk-3-0 libnss3 libxss1 libxtst6 libgbm-dev xvfb xauth
 
+# # This creates the needed files, we don't need it at runtime though
+# # Resolves tests logging "Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory"
+# RUN service dbus start
+
 ENV HOME=/home/test-runner
 ENV APP_DIR=/app
 
@@ -22,3 +26,5 @@ RUN groupadd -g $USER_GID test-group \
 
 WORKDIR $APP_DIR
 USER test-runner
+
+# WORKDIR /app
