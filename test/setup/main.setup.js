@@ -1,4 +1,5 @@
 const { app } = require('electron');
+console.log(app.commandLine);
 // `app` is undefined when running just `mocha`
 app.commandLine.appendSwitch('no-sandbox');
 if (app) {
