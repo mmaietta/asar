@@ -9,6 +9,7 @@ import transform from './util/transformStream';
 import { verifySmartUnpack } from './util/verifySmartUnpack';
 import { TEST_APPS_DIR } from './util/constants';
 import rimraf from 'rimraf';
+import { existsSync, rmdirSync } from 'fs';
 
 const asar = require('../src/asar');
 
@@ -19,7 +20,8 @@ async function assertPackageListEquals(actualList: string[], expectedFilename: s
 
 describe('api', function () {
   afterEach(() => {
-    rimraf.sync(TEST_APPS_DIR, fs);
+    // rimraf.sync(TEST_APPS_DIR, fs);
+    if (existsSync(TEST_APPS_DIR)) rmdirSync(TEST_APPS_DIR, { recursive: true });
   });
   it('should create archive from directory', async () => {
     await asar.createPackage('test/input/packthis/', 'tmp/packthis-api.asar');

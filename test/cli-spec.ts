@@ -8,6 +8,7 @@ import createSymlinkApp from './util/createTestApp';
 import { verifyFileTree, verifySmartUnpack } from './util/verifySmartUnpack';
 import { TEST_APPS_DIR } from './util/constants';
 import rimraf from 'rimraf';
+import { existsSync, rmdirSync } from 'fs';
 
 const exec = promisify(childProcess.exec);
 
@@ -25,7 +26,8 @@ async function assertAsarOutputMatches(args: string, expectedFilename: string) {
 
 describe('command line interface', function () {
   afterEach(() => {
-    rimraf.sync(TEST_APPS_DIR, fs);
+    // rimraf.sync(TEST_APPS_DIR, fs);
+    if (existsSync(TEST_APPS_DIR)) rmdirSync(TEST_APPS_DIR, { recursive: true });
   });
   it('should create archive from directory', async () => {
     await execAsar('p test/input/packthis/ tmp/packthis-cli.asar');

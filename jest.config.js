@@ -11,7 +11,6 @@ const nodeEnvConfig = {
       },
     ],
   },
-  globalSetup: './test/setup/jest.global.setup.ts',
   setupFilesAfterEnv: ['<rootDir>/test/setup/jest.env.setup.ts'],
   testEnvironment: 'node',
   testMatch: ['<rootDir>/test/**/*-spec.ts'],
