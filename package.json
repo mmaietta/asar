@@ -28,7 +28,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:docker": "docker build --build-arg NODE_VERSION=${NODE_VERSION:-22.10} -f Dockerfile -t asar-test-image:${NODE_VERSION:-22.10} .",
+    "build:docker": "docker build --build-arg NODE_VERSION=${NODE_VERSION:-22.10} --build-arg USER_UID=$(id -u) --build-arg USER_GID=$(id -g) -f Dockerfile -t asar-test-image:${NODE_VERSION:-22.10} .",
     "mocha": "xvfb-maybe electron-mocha && mocha",
     "mocha:update": "yarn mocha --update",
     "mocha:watch": "mocha --watch",
