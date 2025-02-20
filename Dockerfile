@@ -21,11 +21,13 @@ ARG USER_GID=1001
 # since electron can't run with `root` user, need to create a custom user
 # (if already existing UID, we skip this, as we just want to match the build system UID) 
 # WITH home folder for `yarn` otherwise it throws noisy logs
-RUN if [[ id -Gn -- $USER_GID ]]; then groupadd -g $USER_GID test-group; fi
-RUN useradd -m -g $USER_GID -u $USER_UID --shell /bin/bash test-runner \
+RUN if [[ id -Gn $USER_GID >/dev/null 2>&1 ]]; then groupadd -g $USER_GID test-group; fi
+RUN if ! [[ id $USER_UID >/dev/null 2>&1 ]]; then \
+   useradd -m -g $USER_GID -u $USER_UID --shell /bin/bash test-runner \
   && mkdir $APP_DIR \
-  && chown -R test-runner:$USER_GID $HOME \
-  && chown -R test-runner:$USER_GID $APP_DIR
+  && chown -R $USER_UID:$USER_GID $HOME \
+  && chown -R $USER_UID:$USER_GID $APP_DIR;\
+  fi
 
 WORKDIR $APP_DIR
 USER test-runner
