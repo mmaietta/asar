@@ -22,9 +22,8 @@ ARG USER_GID=1001
 # (if already existing UID, we skip this, as we just want to match the build system UID) 
 # WITH home folder for `yarn` otherwise it throws noisy logs
 RUN groupadd --non-unique --gid $USER_GID test-group
-RUN if ! [[ id $USER_UID >/dev/null 2>&1 ]]; then \
-   useradd -m -g $USER_GID -u $USER_UID --shell /bin/bash test-runner \
-  && mkdir $APP_DIR; fi
+RUN useradd --non-unique -m -g $USER_GID -u $USER_UID --shell /bin/bash test-runner \
+  && mkdir $APP_DIR
 
 WORKDIR $APP_DIR
 USER test-runner
