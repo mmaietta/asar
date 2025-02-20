@@ -25,8 +25,8 @@ RUN groupadd --non-unique --gid $USER_GID test-group
 RUN if ! [[ id $USER_UID >/dev/null 2>&1 ]]; then \
    useradd -m -g $USER_GID -u $USER_UID --shell /bin/bash test-runner \
   && mkdir $APP_DIR \
-  && chown -R $USER_UID:$USER_GID $HOME \
-  && chown -R $USER_UID:$USER_GID $APP_DIR;\
+  # && chown -R $USER_UID:$USER_GID $HOME \
+  # && chown -R $USER_UID:$USER_GID $APP_DIR;\
   fi
 
 WORKDIR $APP_DIR
